@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Trabalho 4 - Desenvolvimento de Software para Nuvem</title>
+        <style>
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h1 id="trabalho-4---desenvolvimento-de-software-para-nuvem">Trabalho 4 - Desenvolvimento de Software para Nuvem</h1>
+<h2 id="1-ambiente-utilizado">1. Ambiente utilizado</h2>
+<ul>
+<li>
+<p>AWS S3 para armazenamento dos dados.</p>
+</li>
+<li>
+<p>Jupyter Notebooks com Linguagem Scala e Framework Spark para o processamento dos dados.</p>
+</li>
+<li>
+<p>Jupyter Notebooks com Linguagem Python e Framework Pandas para criação dos gráficos e tabelas.</p>
+</li>
+<li>
+<p>Os notebooks Scala foram usados em um cluster do AWS Elastic Map Reduce com a seguinte configuração:</p>
+<ul>
+<li>1 Master <a href="https://aws.amazon.com/pt/ec2/instance-types/">m5.xlarge</a></li>
+<li>2 Cores <a href="https://aws.amazon.com/pt/ec2/instance-types/">m5.xlarge</a></li>
+</ul>
+</li>
+<li>
+<p>Versão do EMR: 6.1.0</p>
+</li>
+<li>
+<p>Versão do Spark: 3.0.0</p>
+</li>
+<li>
+<p>Versão do Pandas: 1.0.5</p>
+</li>
+</ul>
+<h1 id=""></h1>
+<h2 id="2-primeira-questão">2. Primeira Questão</h2>
+<h3 id="21-pré-processamento-dos-dados">2.1 Pré-Processamento dos Dados</h3>
+<p>O dataset da primeira questão possui 32 colunas, mas a maioria delas não seria útil para responder às perguntas propostas, por conta disso várias colunas foram dropadas. Em seguida, foram feitas operações para gerar as colunas <em>date</em> e <em>id</em>. O dataset pré-processado foi salvo no S3 no formato <em>parquet</em>, que é o formato favorito do Spark.</p>
+<p>No começo do notebook <a href="https://github.com/titowoche30/spark-big-data-analysis/blob/main/scala/questao-1.ipynb">questao-1</a> foi criada uma coluna chamada <em>hashtags</em>, que possui as hashtags utilizadas em cada tweet.</p>
+<p>O dataset a ser utilizado possui as colunas: <em>id</em>, <em>tweets</em>, <em>date</em> e <em>hashtags</em>.</p>
+<h3 id="22-a-quais-foram-as-hashtags-mais-usadas-pela-manhã-tarde-e-noite">2.2 a) Quais foram as hashtags mais usadas pela manhã, tarde e noite?</h3>
+<p>Para responder essa pergunta foi necessário:</p>
+<ul>
+<li>Retirar os campos que não tinham hashtags.</li>
+<li>Pegar os registros com <em>date</em> entre 5 e 12 horas (manhã) ou 13 e 18 horas (tarde) ou 19 e 4 horas (noite).</li>
+<li>Agrupar e agregar pela coluna <em>hashtags</em>.</li>
+</ul>
+<p><strong>As 15 hashtags mais usadas pela manhã</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_a_manha.png" alt="1_a_manha"></p>
+<p><strong>As 15 hashtags mais usadas pela tarde</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_a_tarde.png" alt="1_a_tarde"></p>
+<p><strong>As 15 hashtags mais usadas pela noite</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_a_noite.png" alt="1_a_noite"></p>
+<h3 id="23-b-quais-as-hashtags-mais-usadas-em-cada-dia">2.3 b) Quais as hashtags mais usadas em cada dia?</h3>
+<p>Para responder essa pergunta foi necessário:</p>
+<ul>
+<li>Retirar os campos que não tinham hashtags.</li>
+<li>Pegar os registros de cada dia específico (15, 16, 17, 18, 19 e 20).</li>
+<li>Agrupar e agregar pela coluna <em>hashtags</em>.</li>
+</ul>
+<p><strong>As 15 hashtags mais usadas no dia 15/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_b_15.png" alt="1_b_15"></p>
+<p><strong>As 15 hashtags mais usadas no dia 16/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_b_16.png" alt="1_b_16"></p>
+<p><strong>As 15 hashtags mais usadas no dia 17/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_b_17.png" alt="1_b_17"></p>
+<p><strong>As 15 hashtags mais usadas no dia 18/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_b_18.png" alt="1_b_18"></p>
+<p><strong>As 15 hashtags mais usadas no dia 19/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_b_19.png" alt="1_b_19"></p>
+<p><strong>As 15 hashtags mais usadas no dia 20/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_b_20.png" alt="1_b_20"></p>
+<h3 id="24-c-qual-o-número-de-tweets-por-hora-a-cada-dia">2.4 c) Qual o número de tweets por hora a cada dia?</h3>
+<p>Para responder essa pergunta foi necessário:</p>
+<ul>
+<li>Pegar os registros de cada dia específico (15, 16, 17, 18, 19 e 20).</li>
+<li>Criar uma coluna chamada <em>hora</em> a partir da coluna <em>date</em>.</li>
+<li>Agrupar pela coluna <em>hora</em> e agregar pela coluna <em>tweets</em>.</li>
+</ul>
+<p><strong>Número de tweets por hora no dia 15/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_c_15.png" alt="1_c_15"></p>
+<p><strong>Número de tweets por hora no dia 16/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_c_16.png" alt="1_c_16"></p>
+<p><strong>Número de tweets por hora no dia 17/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_c_17.png" alt="1_c_17"></p>
+<p><strong>Número de tweets por hora no dia 18/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_c_18.png" alt="1_c_18"></p>
+<p><strong>Número de tweets por hora no dia 19/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_c_19.png" alt="1_c_19"></p>
+<p><strong>Número de tweets por hora no dia 20/10/2014</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_c_20.png" alt="1_c_20"></p>
+<p><strong>Séries temporais do número de tweets por dia</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/grafico_c.png" alt="grafico_c"></p>
+<h3 id="25-d-quais-as-principais-sentenças-relacionadas-à-palavra-dilma">2.5 d) Quais as principais sentenças relacionadas à palavra “Dilma”?</h3>
+<p>Para responder essa pergunta foi necessário:</p>
+<ul>
+<li>Definir uma sentença como um conjunto(sub-string) de 40 caracteres dentro dos tweets.</li>
+<li>Dividir os tweets em conjuntos de 40 caracteres.</li>
+<li>Como a divisão por 40 caracteres pode gerar uma última sub-string com menos de 40 caracteres, foi necessário pegar somente as sentenças com 40 caracteres.</li>
+<li>Pegar as sentenças que continham <em>&quot;dilma&quot;</em> e que não fossem hashtags.</li>
+<li>Agrupar e agregar pelas sentenças.</li>
+</ul>
+<p><strong>As 15 principais sentenças relacionadas à palavra “Dilma”</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_d.png" alt="1_d"></p>
+<h3 id="26-e-quais-as-principais-sentenças-relacionadas-à-palavra-aécio">2.6 e) Quais as principais sentenças relacionadas à palavra “Aécio”?</h3>
+<p>Para responder essa pergunta foi necessário:</p>
+<ul>
+<li>Definir uma sentença como um conjunto(sub-string) de 40 caracteres dentro dos tweets.</li>
+<li>Dividir os tweets em conjuntos de 40 caracteres.</li>
+<li>Trocar as ocorrências das palavras &quot;aécio&quot; por &quot;aecio&quot; e &quot;Aécio&quot; por &quot;Aecio&quot;.</li>
+<li>Como a divisão por 40 caracteres pode gerar uma última sub-string com menos de 40 caracteres, foi necessário pegar somente as sentenças com 40 caracteres.</li>
+<li>Pegar as sentenças que continham <em>&quot;aecio&quot;</em> e que não fossem hashtags.</li>
+<li>Agrupar e agregar pelas sentenças.</li>
+</ul>
+<p><strong>As 15 principais sentenças relacionadas à palavra “Aecio”</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-1/1_e.png" alt="1_e"></p>
+<h1 id="-1"></h1>
+<h2 id="3-segunda-questão">3. Segunda Questão</h2>
+<h3 id="31-pré-processamento-dos-dados">3.1 Pré-Processamento dos Dados</h3>
+<p>O dataset da segunda questão era um json aninhado com 16 campos no total, mas a maioria dos campos não seria útil para responder às perguntas propostas, por conta disso vários campos foram dropados. Em seguida, foram feitas operações para gerar a coluna Date. O dataset pré-processado foi salvo no S3 no formato <em>parquet</em>, que é o formato favorito do Spark.</p>
+<p>O dataset a ser utilizado possui as colunas: <em>id</em>, <em>text</em>, <em>title</em> e <em>date</em>.</p>
+<h3 id="32-a-encontre-as-palavras-mais-utilizadas-nas-avaliações">3.2 a) Encontre as palavras mais utilizadas nas avaliações</h3>
+<p>Para responder essa pergunta foi necessário:</p>
+<ul>
+<li>Criar uma coluna chamada <em>word</em> que contém todas as palavras de todos os reviews(coluna <em>text</em>) e deixar todas em Lower Case.</li>
+<li>Pegar somente as palavras com mais de 4 caracteres.</li>
+<li>Agrupar e agregar pela coluna <em>word</em>.</li>
+</ul>
+<p><strong>As 15 palavras mais utilizadas nas avaliações</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-2/2_a.png" alt="2_a"></p>
+<h3 id="33-b-encontre-as-expressões-mais-usadas">3.3 b) Encontre as expressões mais usadas</h3>
+<p>Para responder essa pergunta foi necessário:</p>
+<ul>
+<li>Definir uma expressão como um conjunto(sub-string) de 45 caracteres dentro dos tweets.</li>
+<li>Preencher os campos nulos em <em>text</em> com &quot; &quot;</li>
+<li>Dividir os reviews em conjuntos de 45 caracteres.</li>
+<li>Criar uma coluna chamada <em>Expr</em> que contém todos os conjuntos de 45 caracteres de todos os reviews.</li>
+<li>Como a divisão por 45 caracteres pode gerar uma última sub-string com menos de 45 caracteres, foi necessário pegar somente as sentenças com 45 caracteres.</li>
+<li>Agrupar e agregar pela coluna <em>Expr</em>.</li>
+</ul>
+<p><strong>As 15 expressões mais utilizadas nas avaliações</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-2/2_b.png" alt="2_b"></p>
+<h3 id="34-c-encontre-os-principais-tópicos-relacionados-às-revisões">3.4 c) Encontre os principais tópicos relacionados às revisões</h3>
+<p>Para responder essa pergunta foi necessário:</p>
+<ul>
+<li>Definir um tópico como uma palavra com mais de 3 caracteres e menos de 16.</li>
+<li>Criar uma coluna chamada <em>word</em> que contém todas as palavras da coluna <em>title</em> e deixar todas em Lower Case.</li>
+<li>Pegar só as palavras com com mais de 3 caracteres e menos de 16.</li>
+<li>Agrupar e agregar pela coluna <em>word</em>.</li>
+</ul>
+<p><strong>Os 15 principais tópicos relacionados às revisões</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-2/2_c.png" alt="2_c"></p>
+<h3 id="35-d-mapeie-a-distribuição-temporal-das-revisões">3.5 d) Mapeie a distribuição temporal das revisões</h3>
+<p>Para responder essa pergunta foi necessário:</p>
+<ul>
+<li>Agrupar e agregar pela coluna <em>Date</em></li>
+</ul>
+<p><strong>Distribuição temporal das revisões em 2015, 2016 e 2017</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-2/2_d_0.png" alt="2_d_0"></p>
+<p><strong>Distribuição temporal das revisões em 2015</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-2/2_d_2015.png" alt="2_d_2015"></p>
+<p><strong>Distribuição temporal das revisões em 2016</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-2/2_d_2016.png" alt="2_d_2016"></p>
+<p><strong>Distribuição temporal das revisões em 2017</strong></p>
+<p><img src="file:////home/titowoche30/Área de Trabalho/UFC/Cadeiras/Desenvolvimento de Software pra Nuvem/trab4/github/spark-big-data-analysis/python/imagens/questao-2/2_d_2017.png" alt="2_d_2017"></p>
+<h1 id="-2"></h1>
+<h2 id="4-considerações-finais">4. Considerações finais</h2>
+<p>Todo o código desenvolvido e todas as imagens geradas estão disponíveis nesse <a href="https://github.com/titowoche30/spark-big-data-analysis/">repositório</a>.</p>
+
+    </body>
+    </html>
